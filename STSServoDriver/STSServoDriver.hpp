@@ -76,9 +76,9 @@ public:
         bool init(uart_inst_t *serialPort = nullptr, long const &baudRate = 1000000);
 
         /// \brief Ping servo
-        /// \param[in] servoId ID of the servo
+        /// \param[in] servo_id ID of the servo
         /// \return True if servo responded to ping
-        bool ping(uint8_t const &servoId);
+        bool ping(uint8_t const &servo_id);
 
         /// \brief Change the ID of a servo.
         /// \note If the desired ID is already taken, this function does nothing and returns false.
@@ -198,28 +198,28 @@ public:
 
 private:
         /// \brief Send a message to the servos.
-        /// \param[in] servoId ID of the servo
-        /// \param[in] commandID Command id
-        /// \param[in] paramLength length of the parameters
+        /// \param[in] servo_id ID of the servo
+        /// \param[in] command_id Command id
+        /// \param[in] param_length length of the parameters
         /// \param[in] parameters parameters
         /// \return Result of write.
-        bool sendMessage(uint8_t const &servoId,
-                        uint8_t const &commandID,
-                        uint8_t const &paramLength,
-                        uint8_t *parameters);
+        bool sendMessage(uint8_t const &servo_id,
+                         uint8_t const &command_id,
+                         uint8_t const &param_length,
+                         uint8_t *parameters);
 
         /// \brief Recieve a message from a given servo.
-        /// \param[in] servoId ID of the servo
-        /// \param[in] readLength Message length
+        /// \param[in] servo_id ID of the servo
+        /// \param[in] read_length Message length
         /// \param[in] paramLength length of the parameters
-        /// \param[in] outputBuffer Buffer where the data is placed.
+        /// \param[in] output_buffer Buffer where the data is placed.
         /// \return 0 on success
         ///         -1 if read failed due to timeout
         ///         -2 if invalid message (no 0XFF, wrong servo id)
         ///         -3 if invalid checksum
-        int receiveMessage(uint8_t const &servoId,
-                           uint8_t const &readLength,
-                           uint8_t *outputBuffer);
+        int8_t receiveMessage(uint8_t const &servo_id,
+                              uint8_t const &read_length,
+                              uint8_t *output_buffer);
 
         /// \brief Write to a sequence of consecutive registers
         /// \param[in] servoId ID of the servo

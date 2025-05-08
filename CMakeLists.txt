@@ -11,20 +11,16 @@ set(CMAKE_CXX_STANDARD 17)
 # initialize the Raspberry Pi Pico SDK
 pico_sdk_init()
 
-
-
-add_library(sts_servo_driver STSServoDriver/STSServoDriver.cpp)
-target_link_libraries(sts_servo_driver pico_stdlib)
+add_subdirectory(STSServoDriver)
 
 add_executable(robot_pico main.cpp)
 
 # Add pico_stdlib library which aggregates commonly used features
-target_link_libraries(robot_pico pico_stdlib)
-target_link_libraries(robot_pico sts_servo_driver)
+target_link_libraries(robot_pico pico_stdlib sts_servo_driver)
 
 # Enables serial output via USB and UART.
 # pico_enable_stdio_usb(test 1)
-# pico_enable_stdio_uart(test 0)
+pico_enable_stdio_uart(robot_pico 1)
 
 # create map/bin/hex/uf2 file in addition to ELF.
 pico_add_extra_outputs(robot_pico)

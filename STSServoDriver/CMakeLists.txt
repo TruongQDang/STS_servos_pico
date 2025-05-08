@@ -1,0 +1,3 @@
+add_library(sts_servo_driver STSServoDriver.cpp)
+target_include_directories(sts_servo_driver PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(sts_servo_driver pico_stdlib)

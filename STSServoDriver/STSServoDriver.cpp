@@ -11,6 +11,10 @@ namespace instruction
         uint8_t const RESET = 0x06;
 };
 
+STSServoDriver::STSServoDriver()
+{
+}
+
 bool STSServoDriver::init(uart_inst_t *serialPort, long const &baudRate)
 {
         if (serialPort == nullptr)
@@ -23,46 +27,84 @@ bool STSServoDriver::init(uart_inst_t *serialPort, long const &baudRate)
                 if (ping(servo_id))
                         return true;
         }
+
         return false;
 }
 
-bool STSServoDriver::ping(uint8_t const &servoId)
+bool STSServoDriver::ping(uint8_t const &servo_id)
 {
         uint8_t response[1] = {0xFF};
-        int send = sendMessage(servoId,
+        bool sent = sendMessage(servo_id,
                                instruction::PING_,
                                0,
                                response);
-        // // Failed to send
-        // if (send != 6)
-        //         return false;
-        // // Read response
-        // int rd = receiveMessage(servoId, 1, response);
-        // if (rd < 0)
-        //         return false;
-        // return response[0] == 0x00;
+        // Failed to send
+        if (!sent) {
+                return false;
+        }
+        // Read response
+        int8_t rd = receiveMessage(
+                servo_id,
+                1,
+                response);
+        if (rd < 0) {
+                return false;
+        }
+
+        return response[0] == 0x00;
 }
 
-bool STSServoDriver::sendMessage(uint8_t const &servoId, uint8_t const &commandID, uint8_t const &paramLength, uint8_t *parameters)
+bool STSServoDriver::sendMessage(
+        uint8_t const &servo_id, 
+        uint8_t const &command_id, 
+        uint8_t const &param_length, 
+        uint8_t *parameters)
 {
-        uint8_t message[6 + paramLength];
-        uint8_t checksum = servoId + paramLength + 2 + commandID;
+        uint8_t message[6 + param_length];
+        uint8_t checksum = servo_id + param_length + 2 + command_id;
         message[0] = 0xFF;
         message[1] = 0xFF;
-        message[2] = servoId;
-        message[3] = paramLength + 2;
-        message[4] = commandID;
-        for (uint32_t i = 0; i < paramLength; i++) {
+        message[2] = servo_id;
+        message[3] = param_length + 2;
+        message[4] = command_id;
+        for (uint32_t i = 0; i < param_length; i++) {
                 message[5 + i] = parameters[i];
                 checksum += parameters[i];
         }
-        message[5 + paramLength] = ~checksum;
+        message[5 + param_length] = ~checksum;
         if (uart_is_writable(port_)) {
                 uart_puts(port_, reinterpret_cast<const char *>(message));
-                // Give time for the message to be processed.
-                // delayMicroseconds(200);
                 return true;
         }
         
         return false;
+}
+
+int8_t STSServoDriver::receiveMessage(uint8_t const &servo_id, uint8_t const &read_length, uint8_t *output_buffer)
+{
+        uint8_t result[read_length + 5];
+        // 500ms timeout
+        if (!uart_is_readable_within_us(port_, 500000)) {
+                return -1;
+        }
+        uart_read_blocking(port_, output_buffer, 5 + read_length);
+        // Check message integrity
+        if (result[0] != 0xFF || result[1] != 0xFF || 
+            result[2] != servo_id || result[3] != read_length +1) {
+                return -2;
+        }
+        uint8_t checksum = 0;
+        for (uint8_t i = 2; i < read_length; i++) {
+                checksum += result[i];
+        }
+        checksum = ~checksum;
+        if (result[read_length + 4] != checksum) {
+                return -3;
+        }
+
+        // Copy result to output buffer
+        for (int i = 0; i < read_length; i++)
+                output_buffer[i] = result[i + 4];
+
+        return 0;
 }
