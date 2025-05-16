@@ -70,10 +70,9 @@ public:
         STSServoDriver();
 
         /// \brief Initialize the servo driver through serial port
-        /// \param serialPort Serial port, default is Serial
-        /// \param baudRate Baud rate, default 1Mbps
+        /// \param serial_port Serial port, default is Serial
         /// \returns  True on success (at least one servo responds to ping)
-        bool init(uart_inst_t *serialPort = nullptr, long const &baudRate = 1000000);
+        bool init(uart_inst_t *serial_port = nullptr);
 
         /// \brief Ping servo
         /// \param[in] servo_id ID of the servo
@@ -82,117 +81,117 @@ public:
 
         /// \brief Change the ID of a servo.
         /// \note If the desired ID is already taken, this function does nothing and returns false.
-        /// \param[in] oldServoId old servo ID
-        /// \param[in] newServoId new servo ID
+        /// \param[in] old_servo_id old servo ID
+        /// \param[in] new_servo_id new servo ID
         /// \return True if servo could successfully change ID
-        bool setId(uint8_t const &oldServoId, uint8_t const &newServoId);
+        bool setId(uint8_t const &old_servo_id, uint8_t const &new_servo_id);
 
         /// \brief Change the position offset of a servo.
-        /// \param[in] servoId servo ID
+        /// \param[in] servo_id servo ID
         /// \param[in] positionOffset new position offset
         /// \return True if servo could successfully change position offset
-        bool setPositionOffset(uint8_t const &servoId, int const &positionOffset);
+        bool setPositionOffset(uint8_t const &servo_id, int const &positionOffset);
 
         /// \brief Get current servo position.
         /// \note This function assumes that the amplification factor ANGULAR_RESOLUTION is set to 1.
-        /// \param[in] servoId ID of the servo
+        /// \param[in] servo_id ID of the servo
         /// \return Position, in counts. 0 on failure.
-        int getCurrentPosition(uint8_t const &servoId);
+        int getCurrentPosition(uint8_t const &servo_id);
 
         /// \brief Get current servo speed.
         /// \note This function assumes that the amplification factor ANGULAR_RESOLUTION is set to 1.
-        /// \param[in] servoId ID of the servo
+        /// \param[in] servo_id ID of the servo
         /// \return Speed, in counts/s. 0 on failure.
-        int getCurrentSpeed(uint8_t const &servoId);
+        int getCurrentSpeed(uint8_t const &servo_id);
 
         /// \brief Get current servo temperature.
-        /// \param[in] servoId ID of the servo
+        /// \param[in] servo_id ID of the servo
         /// \return Temperature, in degC. 0 on failure.
-        int getCurrentTemperature(uint8_t const &servoId);
+        int getCurrentTemperature(uint8_t const &servo_id);
 
         /// \brief Get current servo current.
-        /// \param[in] servoId ID of the servo
+        /// \param[in] servo_id ID of the servo
         /// \return Current, in A.
-        float getCurrentCurrent(uint8_t const &servoId);
+        float getCurrentCurrent(uint8_t const &servo_id);
 
         /// \brief Check if the servo is moving
-        /// \param[in] servoId ID of the servo
+        /// \param[in] servo_id ID of the servo
         /// \return True if moving, false otherwise.
-        bool isMoving(uint8_t const &servoId);
+        bool isMoving(uint8_t const &servo_id);
 
         /// \brief Set target servo position.
         /// \note This function assumes that the amplification factor ANGULAR_RESOLUTION is set to 1.
-        /// \param[in] servoId ID of the servo
+        /// \param[in] servo_id ID of the servo
         /// \param[in] position Target position, in counts.
         /// \param[in] speed speed of the servo.
         /// \param[in] asynchronous If set, write is asynchronous (ACTION must be send to activate)
         /// \return True on success, false otherwise.
-        bool setTargetPosition(uint8_t const &servoId, int const &position, int const &speed = 4095, bool const &asynchronous = false);
+        bool setTargetPosition(uint8_t const &servo_id, int const &position, int const &speed = 4095, bool const &asynchronous = false);
 
         /// \brief Set target servo velocity.
         /// \note This function assumes that the amplification factor ANGULAR_RESOLUTION is set to 1.
-        /// \param[in] servoId ID of the servo
+        /// \param[in] servo_id ID of the servo
         /// \param[in] velocity Target velocity, in counts/s.
         /// \param[in] asynchronous If set, write is asynchronous (ACTION must be send to activate)
         /// \return True on success, false otherwise.
-        bool setTargetVelocity(uint8_t const &servoId, int const &velocity, bool const &asynchronous = false);
+        bool setTargetVelocity(uint8_t const &servo_id, int const &velocity, bool const &asynchronous = false);
 
         /// \brief Change the target acceleration of a servo.
-        /// \param[in] servoId servo ID
+        /// \param[in] servo_id servo ID
         /// \param[in] acceleration target acceleration
         /// \return True if servo could successfully set target acceleration
-        bool setTargetAcceleration(uint8_t const &servoId, uint8_t const &acceleration, bool const &asynchronous = false);
+        bool setTargetAcceleration(uint8_t const &servo_id, uint8_t const &acceleration, bool const &asynchronous = false);
 
         /// \brief Set servo working mode: position, velocity or step.
-        /// \param[in] servoId ID of the servo
+        /// \param[in] servo_id ID of the servo
         /// \param[in] mode Desired mode
-        bool setMode(unsigned char const &servoId, STSMode const &mode);
+        bool setMode(unsigned char const &servo_id, STSMode const &mode);
 
         /// \brief Trigger the action previously stored by an asynchronous write on all servos.
         /// \return True on success
         bool trigerAction();
 
         /// \brief Write to a single uint8_t register.
-        /// \param[in] servoId ID of the servo
-        /// \param[in] registerId Register id.
+        /// \param[in] servo_id ID of the servo
+        /// \param[in] register_id Register id.
         /// \param[in] value Register value.
         /// \param[in] asynchronous If set, write is asynchronous (ACTION must be send to activate)
         /// \return True if write was successful
-        bool writeRegister(uint8_t const &servoId,
-                           uint8_t const &registerId,
+        bool writeRegister(uint8_t const &servo_id,
+                           uint8_t const &register_id,
                            uint8_t const &value,
                            bool const &asynchronous = false);
 
         /// \brief Write a two-uint8_ts register.
-        /// \param[in] servoId ID of the servo
+        /// \param[in] servo_id ID of the servo
         /// \param[in] registerId Register id (LSB).
         /// \param[in] value Register value.
         /// \param[in] asynchronous If set, write is asynchronous (ACTION must be send to activate)
         /// \return True if write was successful
-        bool writeTwouint8_tsRegister(uint8_t const &servoId,
+        bool writeTwoBytesRegister(uint8_t const &servo_id,
                                    uint8_t const &registerId,
                                    int16_t const &value,
                                    bool const &asynchronous = false);
 
         /// \brief Read a single register
-        /// \param[in] servoId ID of the servo
-        /// \param[in] registerId Register id.
+        /// \param[in] servo_id ID of the servo
+        /// \param[in] register_id Register id.
         /// \return Register value, 0 on failure.
-        uint8_t readRegister(uint8_t const &servoId, uint8_t const &registerId);
+        uint8_t readRegister(uint8_t const &servo_id, uint8_t const &register_id);
 
         /// \brief Read two uint8_ts, interpret result as <LSB> <MSB>
-        /// \param[in] servoId ID of the servo
-        /// \param[in] registerId LSB register id.
+        /// \param[in] servo_id ID of the servo
+        /// \param[in] register_id LSB register id.
         /// \return Register value, 0 on failure.
-        int16_t readTwouint8_tsRegister(uint8_t const &servoId, uint8_t const &registerId);
+        int16_t readTwoBytesRegister(uint8_t const &servo_id, uint8_t const &register_id);
 
         /// @brief Sets the target positions for multiple servos simultaneously.
         /// @param[in] NumberOfServos Number of servo.
-        /// @param[in] servoIds Array of servo IDs to control.
-        /// @param[in] positions Array of target positions (corresponds to servoIds).
-        /// @param[in] speeds Array of target speeds (corresponds to servoIds).
+        /// @param[in] servo_ids Array of servo IDs to control.
+        /// @param[in] positions Array of target positions (corresponds to servo_ids).
+        /// @param[in] speeds Array of target speeds (corresponds to servo_ids).
         void setTargetPositions(uint8_t const &numberOfServos,
-                                const uint8_t servoIds[],
+                                const uint8_t servo_ids[],
                                 const int positions[],
                                 const int speeds[]);
 
@@ -203,7 +202,7 @@ private:
         /// \param[in] param_length length of the parameters
         /// \param[in] parameters parameters
         /// \return Result of write.
-        bool sendMessage(uint8_t const &servo_id,
+        int sendMessage(uint8_t const &servo_id,
                          uint8_t const &command_id,
                          uint8_t const &param_length,
                          uint8_t *parameters);
@@ -217,33 +216,33 @@ private:
         ///         -1 if read failed due to timeout
         ///         -2 if invalid message (no 0XFF, wrong servo id)
         ///         -3 if invalid checksum
-        int8_t receiveMessage(uint8_t const &servo_id,
+        int receiveMessage(uint8_t const &servo_id,
                               uint8_t const &read_length,
                               uint8_t *output_buffer);
 
         /// \brief Write to a sequence of consecutive registers
-        /// \param[in] servoId ID of the servo
-        /// \param[in] startRegister First register
-        /// \param[in] writeLength Number of registers to write
+        /// \param[in] servo_id ID of the servo
+        /// \param[in] start_register First register
+        /// \param[in] write_length Number of registers to write
         /// \param[in] parameters Value of the registers
         /// \param[in] asynchronous If set, write is asynchronous (ACTION must be send to activate)
         /// \return True if write was successful
-        bool writeRegisters(uint8_t const &servoId,
-                            uint8_t const &startRegister,
-                            uint8_t const &writeLength,
+        bool writeRegisters(uint8_t const &servo_id,
+                            uint8_t const &start_register,
+                            uint8_t const &write_length,
                             uint8_t const *parameters,
                             bool const &asynchronous = false);
 
         /// \brief Read a sequence of consecutive registers.
-        /// \param[in] servoId ID of the servo
-        /// \param[in] startRegister First register
-        /// \param[in] readLength Number of registers to write
-        /// \param[out] outputBuffer Buffer where to read the data (must have been allocated by the user)
+        /// \param[in] servo_id ID of the servo
+        /// \param[in] start_register First register
+        /// \param[in] read_length Number of registers to write
+        /// \param[out] output_buffer Buffer where to read the data (must have been allocated by the user)
         /// \return 0 on success, -1 if write failed, -2 if read failed, -3 if checksum verification failed
-        int readRegisters(uint8_t const &servoId,
-                          uint8_t const &startRegister,
-                          uint8_t const &readLength,
-                          uint8_t *outputBuffer);
+        int readRegisters(uint8_t const &servo_id,
+                          uint8_t const &start_register,
+                          uint8_t const &read_length,
+                          uint8_t *output_buffer);
 
         /// @brief Send two uint8_ts and update checksum
         /// @param[in] convertedValue Converted int value
@@ -253,7 +252,7 @@ private:
         /// @brief Convert int to pair of uint8_ts
         /// @param[in] value
         /// @param[out] result
-        void convertIntTouint8_ts(uint8_t const &servoId, int const &value, uint8_t result[2]);
+        void convertIntToBytes(uint8_t const &servo_id, int const &value, uint8_t result[2]);
 
 private:
         uart_inst_t *port_;
