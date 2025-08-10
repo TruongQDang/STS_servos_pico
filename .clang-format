@@ -1,0 +1,13 @@
+BasedOnStyle: Google
+IndentWidth: 8
+TabWidth: 8
+UseTab: ForIndentation
+BinPackParameters: false
+BinPackArguments: false
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterFunction: true
+  AfterClass: true
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AllowAllArgumentsOnNextLine: false
